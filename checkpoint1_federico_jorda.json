@@ -1,0 +1,166 @@
+{
+  "name": "Checkpoint 1 - Agente Cotizador Logístico",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3d304b6e-948b-4878-9189-34adc3e84b0b",
+      "name": "When chat message received",
+      "webhookId": "97f10915-1cdc-4ccf-9eb8-f4ac2e2ad44c"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        128,
+        208
+      ],
+      "id": "d33a50aa-bc60-42a7-b7ea-e687e0232029",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "RXDe2pMNx0O2zUWB",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "ROL\n\nSos un Agente de Cotización Logística especializado en transporte terrestre de cargas.\n\nTu función es analizar solicitudes de transporte, detectar la información necesaria para cotizar y utilizar las herramientas disponibles cuando corresponda.\n\nÁMBITO\n\nTrabajás exclusivamente con solicitudes relacionadas con logística, transporte y cotizaciones.\n\nPodés analizar información como:\n- origen\n- destino\n- tipo de unidad\n- cantidad de pallets\n- peso\n- kilómetros\n- tarifa\n- observaciones operativas\n- condiciones del servicio\n\nOBJETIVO\n\nTu objetivo es interpretar correctamente cada solicitud logística y asistir en la preparación de una cotización clara y profesional.\n\nCuando alguna acción pueda realizarse mediante una herramienta disponible, evaluá si corresponde utilizarla antes de responder.\n\nREGLAS\n\n1. Nunca inventes tarifas, distancias, clientes, proveedores ni condiciones comerciales.\n2. Nunca completes información faltante mediante suposiciones.\n3. Si falta información necesaria para avanzar, indicá exactamente qué dato falta.\n4. Utilizá las herramientas disponibles solamente cuando sean necesarias.\n5. No confirmes disponibilidad de vehículos sin información verificable.\n6. No confirmes contrataciones.\n7. No realices pagos ni compromisos financieros.\n8. No modifiques información comercial salvo autorización explícita.\n9. No utilices lenguaje inclusivo.\n10. Respondé siempre en español, utilizando un tono profesional, claro y directo.\n11. En los correos que redactes, nunca utilices placeholders como [Nombre], [Cargo], [Empresa] o datos ficticios.\n\n12. Cuando no se indique el nombre del destinatario, comenzá el correo con \"Buenos días\" o \"Buenas tardes\", sin inventar nombres.\n\n13. Finalizá los correos con la siguiente firma:\n\nSaludos,\nFederico Jorda\nSupervisor de ruteo\nLOGISTICA S.A\n\nESCALAMIENTO\n\nSolicitá intervención humana cuando:\n- falten datos críticos;\n- exista información contradictoria;\n- no exista una tarifa válida;\n- la acción solicitada esté fuera de tu ámbito;\n- exista una decisión comercial que requiera autorización.\n\nNunca inventes información para continuar el proceso.",
+          "maxIterations": 7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "33eb1c2e-cdc9-4333-babe-089d525091eb",
+      "name": "AI Agent - Cotizador Logístico"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Herramienta para crear borradores de correos relacionados con cotizaciones logísticas.\n\nUtilizá esta herramienta solamente cuando el usuario solicite explícitamente preparar, generar o guardar un correo o borrador relacionado con una cotización logística.\n\nUsala únicamente cuando exista información suficiente para redactar la comunicación.\n\nNo utilices esta herramienta para consultas generales sobre logística, tarifas, vehículos, rutas, pallets o kilómetros.\n\nSi faltan datos importantes, no utilices la herramienta y solicitá primero la información faltante.\n\nLa creación del borrador no implica aprobación comercial, contratación ni confirmación del servicio.\nLos borradores deben estar listos para revisión humana, sin placeholders, campos pendientes ni información inventada. Si no se conoce el nombre del destinatario, utilizar un saludo genérico profesional.",
+        "resource": "draft",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To_Email', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        208
+      ],
+      "id": "1435fcb1-5145-4016-ad9d-d98bc4bb20bb",
+      "name": "Gmail Tool - Crear Borrador",
+      "webhookId": "f904e05a-6544-4af9-b9b7-5190d047597e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9qZF7hY9X9WvCnx0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "fedejorda@gmail.com",
+        "subject": "Checkpoint 1 | Log Agente Cotizador",
+        "emailType": "text",
+        "message": "=LOG DE EJECUCIÓN - AGENTE COTIZADOR LOGÍSTICO  Solicitud recibida: {{ $('When chat message received').item.json.chatInput }}  Resultado del agente: {{ $json.output }}  Fecha de ejecución: {{ $now }}  Workflow: Checkpoint 1 - Agente Cotizador Logístico",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        0
+      ],
+      "id": "0b3704ef-3158-4410-85a9-83976b5dab92",
+      "name": "Gmail - Log de Observabilidad",
+      "webhookId": "02b68ffc-a05c-426e-b138-cefde234de1d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9qZF7hY9X9WvCnx0",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent - Cotizador Logístico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent - Cotizador Logístico",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent - Cotizador Logístico": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Log de Observabilidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Tool - Crear Borrador": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent - Cotizador Logístico",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b2e15c79-e616-4cc6-8dc8-87d2593979eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "313f1b722e4be52e70f57960db10cb83529623662ed7d7411ae33326681916ad"
+  },
+  "nodeGroups": [],
+  "id": "7AUbySuAhuPRh1ET",
+  "tags": []
+}
