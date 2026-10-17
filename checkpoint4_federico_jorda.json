@@ -286,7 +286,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        1024,
+        1152,
         0
       ],
       "id": "0364e399-6ba3-4fe5-b939-97ea67b88600",
@@ -997,7 +997,8 @@
       "name": "Create or update a record",
       "credentials": {
         "airtableTokenApi": {
-          "id": "kexphqKJlX9vmyik",          "name": "Airtable Personal Access Token account"
+          "id": "kexphqKJlX9vmyik",
+          "name": "Airtable Personal Access Token account"
         }
       }
     },
@@ -1056,8 +1057,8 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.4,
       "position": [
-        -192,
-        80
+        -448,
+        96
       ],
       "id": "be86ca38-9fdd-478b-aff7-958b258b1571",
       "name": "Gmail Trigger",
@@ -1096,8 +1097,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        64,
-        80
+        -192,
+        96
       ],
       "id": "a2185b7b-f149-4afa-97e6-8e537e990a34",
       "name": "IF - Anti Auto Reply"
@@ -1149,8 +1150,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        336,
-        96
+        112,
+        112
       ],
       "id": "25c33623-4c2e-49e3-b82f-1cdebbea2e97",
       "name": "Set - Payload Limpio"
@@ -1236,8 +1237,8 @@
       "type": "n8n-nodes-base.hubspot",
       "typeVersion": 2.2,
       "position": [
-        3296,
-        352
+        3248,
+        496
       ],
       "id": "07dbaaff-6cef-4e02-9851-e0f985ebfbc5",
       "name": "HubSpot - Crear o Actualizar Contacto",
@@ -1260,8 +1261,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        3520,
-        352
+        3488,
+        336
       ],
       "id": "26aea26e-70ef-4014-b513-58adcdab298e",
       "name": "Gmail - Crear Borrador HITL",
@@ -1302,8 +1303,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        3744,
-        352
+        3712,
+        336
       ],
       "id": "58a65589-f563-4328-9f86-4a1c019a8875",
       "name": "Set - Payload Slack"
@@ -1324,8 +1325,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.7,
       "position": [
-        3968,
-        352
+        3936,
+        336
       ],
       "id": "dd8de65b-e36b-4b20-8348-ff3c1f930b59",
       "name": "Send a message",
@@ -1336,6 +1337,40 @@
           "name": "Slack account"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0eb51dac-8d4d-467b-940d-94057d43f7b1",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        112
+      ],
+      "id": "88f1d8f9-cefd-45fa-bb39-0a85bf189569",
+      "name": "IF - Email Valido"
     }
   ],
   "pinData": {},
@@ -1631,7 +1666,7 @@
       "main": [
         [
           {
-            "node": "Search records",
+            "node": "IF - Email Valido",
             "type": "main",
             "index": 0
           }
@@ -1653,7 +1688,7 @@
       "main": [
         [
           {
-            "node": "HubSpot - Crear o Actualizar Contacto",
+            "node": "Gmail - Crear Borrador HITL",
             "type": "main",
             "index": 0
           }
@@ -1699,6 +1734,17 @@
           }
         ]
       ]
+    },
+    "IF - Email Valido": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1706,7 +1752,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "a0f649b6-be79-403f-b9b5-19ec6dcbd888",
+  "versionId": "1cd16644-98fa-4afe-b7e9-b0afc7b9ad32",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "313f1b722e4be52e70f57960db10cb83529623662ed7d7411ae33326681916ad"
